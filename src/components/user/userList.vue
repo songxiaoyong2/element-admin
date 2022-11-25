@@ -1,42 +1,58 @@
 <template>
   <div>
-    <el-container style="margin-left: 200px">
+    <el-container style="transition: all 0.3s">
       <el-main>
-        <el-table :data="tableData">
-          <el-table-column type="index" label="用户编号" width="140">
+        <el-button type="primary" @click="add"
+          >添加<i class="el-icon-circle-plus el-icon--right"></i
+        ></el-button>
+
+        <el-table
+          :data="tableData"
+          style="text-align: center; transition: all 0.3s"
+        >
+          <el-table-column
+            type="index"
+            label="编号"
+            :index="getIndex"
+            width="60"
+            :default-sort="{ prop: 'userId', order: 'descending' }"
+          >
+          </el-table-column>
+          <el-table-column label="ID" width="60" prop="userId" sortable>
+            <template slot-scope="scope">
+              <el-tag size="mini">{{ scope.row.userId }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column prop="username" label="姓名" width="140">
           </el-table-column>
-          <el-table-column prop="userSex" label="性别" width="120">
+          <el-table-column prop="userSex" label="性别" width="60">
           </el-table-column>
-          <el-table-column prop="userEmail" label="邮箱"> </el-table-column>
-          <el-table-column prop="userTel" label="电话"> </el-table-column>
-          <el-table-column prop="userXueli" label="学历"> </el-table-column>
-          <el-table-column prop="option" label="操作">
+          <el-table-column prop="userEmail" label="邮箱" width="200">
+          </el-table-column>
+          <el-table-column prop="userTel" label="电话" width="120">
+          </el-table-column>
+          <el-table-column prop="userXueli" label="学历" width="200">
+          </el-table-column>
+          <el-table-column
+            prop="option"
+            label="操作"
+            :width="isCollapse ? 425 : 300"
+            style="transition: all 0.3s"
+          >
             <template slot-scope="scope">
-              <el-button
-                @click="handleClick(scope.row)"
-                type="text"
-                size="small"
+              <el-button @click="handleClick(scope.row)" type="info" size="mini"
                 >查看</el-button
               >
-              <el-button type="text" size="small" @click="edit(scope.row)"
+              <el-button type="primary" size="mini" @click="edit(scope.row)"
                 >编辑</el-button
               >
               <el-button
                 @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                size="small"
+                type="danger"
+                size="mini"
               >
                 移除
               </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column prop="address" label="地址">
-            <template slot-scope="scope" slot="header">
-              <el-button type="primary" @click="add"
-                >添加<i class="el-icon-circle-plus el-icon--right"></i
-              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,7 +72,10 @@
           </el-pagination></el-row
       ></el-footer>
     </el-container>
-    <add-user></add-user>
+    <add-user
+      :dialogFormVisible="dialogFormVisible"
+      @hideDialog="hideDialog"
+    ></add-user>
 
     <edit-user
       :editForm="editForm"
@@ -93,8 +112,11 @@ export default {
         pageNum: 1,
       },
       editForm: {}, //保存修改的数据
+      ins: [],
+      dialogFormVisible: false, //用来控制添加用户弹出窗
     };
   },
+
   methods: {
     // 删除此条数据
     deleteRow(index, rows) {
@@ -148,9 +170,17 @@ export default {
       this.total = data.count;
       this.tableData = data.data;
     },
+    getIndex(ind) {
+      return ind + this.page.pageSize * (this.page.pageNum - 1) + 1;
+    },
+    // 关闭添加用户弹出窗
+    hideDialog(val) {
+      this.dialogFormVisible = val;
+    },
   },
   async mounted() {
     this.getUserList();
+    console.log(this.getIndex());
   },
   watch: {
     page: {
@@ -162,7 +192,22 @@ export default {
       },
     },
   },
+  computed: {
+    isCollapse() {
+      return this.$store.state.isCollapse;
+    },
+  },
 };
 </script>
 
-<style></style>
+<style>
+.section-big {
+  margin-left: 64px !important;
+}
+el-contain {
+  transition: all 0.3s;
+}
+.el-table .el-table__cell {
+  text-align: center;
+}
+</style>

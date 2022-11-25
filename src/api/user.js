@@ -15,3 +15,11 @@ export const editUser = data => {
     data,
   });
 };
+// 添加用户
+export const addUser = data => {
+  return request({
+    url: "user/saveSingle",
+    method: "POST",
+    data,
+  });
+};
