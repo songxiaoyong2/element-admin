@@ -46,13 +46,24 @@
               <el-button type="primary" size="mini" @click="edit(scope.row)"
                 >编辑</el-button
               >
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="danger"
-                size="mini"
+
+              <el-popconfirm
+                confirm-button-text="好的"
+                cancel-button-text="不用了"
+                icon="el-icon-info"
+                icon-color="red"
+                title="这是一段内容确定删除吗？"
+                @confirm="deleteRow(scope.$index, tableData)"
               >
-                移除
-              </el-button>
+                <el-button
+                  type="danger"
+                  size="mini"
+                  slot="reference"
+                  style="margin-left: 10px"
+                >
+                  移除
+                </el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>

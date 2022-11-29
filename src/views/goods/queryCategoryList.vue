@@ -8,6 +8,7 @@
         filterable
         @change="ch"
         :clearable="true"
+        v-model="activeNames"
       ></el-cascader>
     </div>
     <el-divider></el-divider>
@@ -37,7 +38,7 @@ export default {
   data() {
     return {
       options: [],
-      activeNames: [],
+      activeNames: [1, 3, 6],
       dataList: [],
       count: null,
     };
@@ -48,13 +49,14 @@ export default {
       .replace(/catName/g, "label")
       .replace(/catId/g, "value");
     this.options = JSON.parse(a);
-    console.log(this.options);
+    this.ch(this.activeNames);
   },
   methods: {
     async ch(val) {
       this.activeNames = [];
       if (val.length !== 0) {
         const { data } = await attrListApi(val[val.length - 1]);
+        console.log(data);
         this.dataList = data.data;
         this.count = data.count;
       } else {
